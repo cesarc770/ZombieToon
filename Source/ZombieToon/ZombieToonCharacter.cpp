@@ -61,6 +61,17 @@ void AZombieToonCharacter::BeginPlay()
 	Weapon->SetOwner(this);
 }
 
+void AZombieToonCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bIsRecoiling)
+	{
+		float FinalRecoil = Recoil * FMath::FRandRange(-.5f, .1f);
+		AddControllerPitchInput(FinalRecoil);
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -85,6 +96,10 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	//shooting weapon
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AZombieToonCharacter::OnShootStart);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AZombieToonCharacter::OnShootEnd);
+
+	//Aim Down Sights
+	PlayerInputComponent->BindAction("ADS", IE_Pressed, this, &AZombieToonCharacter::ZoomIn);
+	PlayerInputComponent->BindAction("ADS", IE_Released, this, &AZombieToonCharacter::ZoomOut);
 
 	// handle touch devices
 	//PlayerInputComponent->BindTouch(IE_Pressed, this, &AZombieToonCharacter::TouchStarted);
@@ -146,6 +161,7 @@ void AZombieToonCharacter::OnShootStart()
 {
 	if (Weapon)
 	{
+		bIsRecoiling = true;
 		Weapon->PullTrigger();
 	}
 
@@ -156,7 +172,28 @@ void AZombieToonCharacter::OnShootEnd()
 {
 	if (Weapon)
 	{
+		bIsRecoiling = false;
 		Weapon->ReleaseTrigger();
 	}
 
+}
+
+void AZombieToonCharacter::ZoomIn()
+{
+	if (auto ThirdPersonCamera = GetCameraBoom())
+	{
+		ThirdPersonCamera->TargetArmLength = 150.f;
+
+		bIsZoomedIn = true;
+	}
+}
+
+void AZombieToonCharacter::ZoomOut()
+{
+	if (auto ThirdPersonCamera = GetCameraBoom())
+	{
+		ThirdPersonCamera->TargetArmLength = 300.f;
+
+		bIsZoomedIn = false;
+	}
 }

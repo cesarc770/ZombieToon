@@ -21,6 +21,9 @@ class AZombieToonCharacter : public ACharacter
 public:
 	AZombieToonCharacter();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -35,6 +38,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float AirControl = 0.2f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Recoil)
+	float Recoil = 0.1f;
 
 protected:
 
@@ -61,6 +67,8 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	void ZoomIn();
+	void ZoomOut();
 	void OnShootStart();
 	void OnShootEnd();
 
@@ -76,6 +84,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 private:
+	bool bIsRecoiling = false;
+	bool bIsZoomedIn = false;
 
 	UPROPERTY()
 	class AWeapon* Weapon;

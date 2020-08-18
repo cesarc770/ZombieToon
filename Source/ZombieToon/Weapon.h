@@ -53,7 +53,7 @@ private:
 
 	/** time between two consecutive shots */
 	UPROPERTY(EditDefaultsOnly, Category = WeaponStat)
-	float TimeBetweenShots = 0.2f;
+	float TimeBetweenShots = 0.07f;
 
 	UPROPERTY(EditAnywhere, Category = WeaponStat)
 	float WeaponRange = 1000.f;
