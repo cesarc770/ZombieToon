@@ -32,7 +32,6 @@ AZombieToonCharacter::AZombieToonCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->AirControl = AirControl;
-	GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -57,6 +56,7 @@ void AZombieToonCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
+	GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
 	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("weapon_socket"));
 	Weapon->SetOwner(this);
@@ -70,6 +70,27 @@ void AZombieToonCharacter::Tick(float DeltaTime)
 	{
 		float FinalRecoil = Recoil * FMath::FRandRange(-.5f, .1f);
 		AddControllerPitchInput(FinalRecoil);
+	}
+
+	if (!bIsZoomedIn)
+	{
+		if (bCanSpeedBoost)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = MaxSpeedBoostWalkSpeed;
+		}
+		else if (!bCanSpeedBoost)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
+		}
+	}
+
+	if (bHasRocketGun)
+	{
+		GiveRocketGun();
+	}
+	else if (!bHasRocketGun)
+	{
+		TakeRocketGun();
 	}
 }
 
@@ -200,5 +221,25 @@ void AZombieToonCharacter::ZoomOut()
 		GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
 
 		bIsZoomedIn = false;
+	}
+}
+
+void AZombieToonCharacter::GiveRocketGun()
+{
+	if (!Weapon->bIsRocketGun)
+	{
+		Weapon->GiveRocketGun();
+		Weapon->bIsRocketGun = true;
+		bHasRocketGun = true;
+	}
+}
+
+void AZombieToonCharacter::TakeRocketGun()
+{
+	if (Weapon->bIsRocketGun)
+	{
+		Weapon->TakeRocketGun();
+		Weapon->bIsRocketGun = false;
+		bHasRocketGun = false;
 	}
 }

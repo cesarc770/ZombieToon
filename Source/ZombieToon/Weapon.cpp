@@ -26,6 +26,9 @@ AWeapon::AWeapon()
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CurrentDamage = RegularDamage;
+	CurrentAmmo = RegularAmmo;
 	
 }
 
@@ -36,11 +39,25 @@ void AWeapon::Tick(float DeltaTime)
 
 }
 
+void AWeapon::GiveRocketGun()
+{
+	CurrentAmmo = RocketAmmo;
+	CurrentDamage = RocketDamage;
+	TimeBetweenShots = 0.f;
+}
+
+void AWeapon::TakeRocketGun()
+{
+	CurrentAmmo = RegularAmmo;
+	CurrentDamage = RegularDamage;
+	TimeBetweenShots = 0.07f;
+}
+
 void AWeapon::PullTrigger()
 {
 	bIsFiring = true;
 
-	if (RegularAmmo > 0)
+	if (CurrentAmmo > 0)
 	{
 
 		//const float GameTime = GetWorld()->GetTimeSeconds();
@@ -91,7 +108,7 @@ bool AWeapon::WeaponTrace(FHitResult& Hit, FVector& ShotDirection)
 
 void AWeapon::HandleFiring()
 {
-	RegularAmmo--;
+	CurrentAmmo--;
 	//UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
 	//UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
 

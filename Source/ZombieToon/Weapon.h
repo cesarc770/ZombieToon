@@ -29,6 +29,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	bool bIsRocketGun = false;
+
+	void GiveRocketGun();
+	void TakeRocketGun();
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
@@ -40,10 +46,16 @@ private:
 	bool bIsFiring = false;
 
 	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	int CurrentAmmo;
+
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
 	int RegularAmmo = 50;
 
 	UPROPERTY(EditAnywhere, Category = WeaponStat)
 	int RocketAmmo = 5;
+
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	float CurrentDamage = 10.f;
 
 	UPROPERTY(EditAnywhere, Category = WeaponStat)
 	float RegularDamage = 10.f;

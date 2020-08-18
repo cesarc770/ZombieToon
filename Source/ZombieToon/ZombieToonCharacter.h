@@ -46,7 +46,16 @@ public:
 	float MaxRegularWalkSpeed = 600.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float MaxSpeedBoostWalkSpeed = 1200.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float MaxADSWalkSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
+	bool bCanSpeedBoost = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
+	bool bHasRocketGun = false;
 
 protected:
 
@@ -99,6 +108,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass;
+
+	void GiveRocketGun();
+	void TakeRocketGun();
 
 
 
