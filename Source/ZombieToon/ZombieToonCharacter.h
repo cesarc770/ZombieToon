@@ -42,6 +42,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Recoil)
 	float Recoil = 0.1f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float MaxRegularWalkSpeed = 600.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float MaxADSWalkSpeed = 300.f;
+
 protected:
 
 	virtual void BeginPlay() override;

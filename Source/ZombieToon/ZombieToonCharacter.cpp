@@ -32,6 +32,7 @@ AZombieToonCharacter::AZombieToonCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->AirControl = AirControl;
+	GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -184,6 +185,8 @@ void AZombieToonCharacter::ZoomIn()
 	{
 		ThirdPersonCamera->TargetArmLength = 150.f;
 
+		GetCharacterMovement()->MaxWalkSpeed = MaxADSWalkSpeed;
+
 		bIsZoomedIn = true;
 	}
 }
@@ -193,6 +196,8 @@ void AZombieToonCharacter::ZoomOut()
 	if (auto ThirdPersonCamera = GetCameraBoom())
 	{
 		ThirdPersonCamera->TargetArmLength = 300.f;
+
+		GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
 
 		bIsZoomedIn = false;
 	}
