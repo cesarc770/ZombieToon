@@ -31,15 +31,14 @@ public:
 
 	/** Jump Z Velocity */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Movement)
-	float JumpZVelocity = 450.f;
+	float JumpZVelocity = 650.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float AirControl = 0.2f;
 
 protected:
 
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
+	virtual void BeginPlay() override;
 
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
@@ -48,7 +47,7 @@ protected:
 	void MoveRight(float Value);
 
 	/** Called for side to side input */
-	virtual void Jump() override;
+	void Jumping();
 
 	/** 
 	 * Called via input to turn at a given rate. 
@@ -62,11 +61,8 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
-
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+	void OnShootStart();
+	void OnShootEnd();
 
 protected:
 	// APawn interface
@@ -78,5 +74,18 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+private:
+
+	UPROPERTY()
+	class AWeapon* Weapon;
+
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWeapon> WeaponClass;
+
+
+
+
 };
 

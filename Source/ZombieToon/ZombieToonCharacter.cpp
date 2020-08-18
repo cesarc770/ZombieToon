@@ -8,6 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Weapon.h"
+#include "Components/CapsuleComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AZombieToonCharacter
@@ -29,7 +31,6 @@ AZombieToonCharacter::AZombieToonCharacter()
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
 	GetCharacterMovement()->AirControl = AirControl;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
@@ -48,6 +49,18 @@ AZombieToonCharacter::AZombieToonCharacter()
 	
 }
 
+//////
+//begin play
+void AZombieToonCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
+	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("weapon_socket"));
+	Weapon->SetOwner(this);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -55,7 +68,7 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AZombieToonCharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AZombieToonCharacter::Jumping);
 	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AZombieToonCharacter::MoveForward);
@@ -69,29 +82,19 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AZombieToonCharacter::LookUpAtRate);
 
+	//shooting weapon
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AZombieToonCharacter::OnShootStart);
+	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AZombieToonCharacter::OnShootEnd);
+
 	// handle touch devices
 	//PlayerInputComponent->BindTouch(IE_Pressed, this, &AZombieToonCharacter::TouchStarted);
 	//PlayerInputComponent->BindTouch(IE_Released, this, &AZombieToonCharacter::TouchStopped);
 
 	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AZombieToonCharacter::OnResetVR);
+	//PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AZombieToonCharacter::OnResetVR);
 }
 
 
-void AZombieToonCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-void AZombieToonCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		Jump();
-}
-
-void AZombieToonCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		StopJumping();
-}
 
 void AZombieToonCharacter::TurnAtRate(float Rate)
 {
@@ -134,7 +137,26 @@ void AZombieToonCharacter::MoveRight(float Value)
 	}
 }
 
-void AZombieToonCharacter::Jump()
+void AZombieToonCharacter::Jumping()
 {
-	Super::Jump();
+	ACharacter::Jump();
+}
+
+void AZombieToonCharacter::OnShootStart()
+{
+	if (Weapon)
+	{
+		Weapon->PullTrigger();
+	}
+
+}
+
+
+void AZombieToonCharacter::OnShootEnd()
+{
+	if (Weapon)
+	{
+		Weapon->ReleaseTrigger();
+	}
+
 }

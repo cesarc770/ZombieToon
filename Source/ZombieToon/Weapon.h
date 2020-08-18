@@ -15,9 +15,15 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
+	void PullTrigger();
+	void ReleaseTrigger();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//timer to repeat when holding fire button
+	FTimerHandle TimerHandle_HandleFiring;
 
 public:	
 	// Called every frame
@@ -30,5 +36,30 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* Mesh;
 
+	UPROPERTY(VisibleAnywhere)
+	bool bIsFiring = false;
 
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	int RegularAmmo = 50;
+
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	int RocketAmmo = 5;
+
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	float RegularDamage = 10.f;
+
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	float RocketDamage = 20.f;
+
+	/** time between two consecutive shots */
+	UPROPERTY(EditDefaultsOnly, Category = WeaponStat)
+	float TimeBetweenShots = 0.2f;
+
+	UPROPERTY(EditAnywhere, Category = WeaponStat)
+	float WeaponRange = 1000.f;
+
+	/** Helper Methods**/
+	void HandleFiring();
+	bool WeaponTrace(FHitResult& Hit, FVector& ShotDirection);
+	AController* GetOwnerController() const;
 };
