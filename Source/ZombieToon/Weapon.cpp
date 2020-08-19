@@ -3,10 +3,12 @@
 
 #include "Weapon.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
+#include "Animation/AnimInstance.h"
+#include "ZombieToonCharacter.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -28,8 +30,7 @@ void AWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentDamage = RegularDamage;
-	CurrentAmmo = RegularAmmo;
-	
+	CurrentAmmo = RegularAmmo;		
 }
 
 // Called every frame
@@ -57,8 +58,6 @@ void AWeapon::PullTrigger()
 {
 	bIsFiring = true;
 
-	if (CurrentAmmo > 0)
-	{
 
 		//const float GameTime = GetWorld()->GetTimeSeconds();
 		if (TimeBetweenShots > 0.0f)
@@ -70,17 +69,25 @@ void AWeapon::PullTrigger()
 			HandleFiring();
 		}
 
-	}
-	else
-	{
-		//reload - add 50 shots and reload anim
-	}
 
 }
 void AWeapon::ReleaseTrigger()
 {
 	bIsFiring = false;
 	GetWorldTimerManager().ClearTimer(TimerHandle_HandleFiring);
+}
+
+void AWeapon::GiveAmmo()
+{
+	if (bIsRocketGun)
+	{
+		CurrentAmmo = RocketAmmo;
+	}
+	else 
+	{
+		CurrentAmmo = RegularAmmo;
+	}
+	bShouldReload = false;
 }
 
 bool AWeapon::WeaponTrace(FHitResult& Hit, FVector& ShotDirection)
@@ -108,32 +115,40 @@ bool AWeapon::WeaponTrace(FHitResult& Hit, FVector& ShotDirection)
 
 void AWeapon::HandleFiring()
 {
-	CurrentAmmo--;
-	//UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
-	//UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
-
-	FHitResult Hit;
-	FVector ShotDirection;
-
-	bool bSuccess = WeaponTrace(Hit, ShotDirection);
-	if (bSuccess)
+	if (CurrentAmmo > 0)
 	{
-		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
-		//UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ImpactSound, Hit.Location);
-		DrawDebugPoint(GetWorld(), Hit.Location, 10, FColor::Red, true);
-		AActor* HitActor = Hit.GetActor();
+		bShouldReload = false;
+		CurrentAmmo--;
+		//UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
+		//UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
 
-		if (HitActor)
+		FHitResult Hit;
+		FVector ShotDirection;
+
+		bool bSuccess = WeaponTrace(Hit, ShotDirection);
+		if (bSuccess)
 		{
-			FPointDamageEvent DamageEvent(RegularDamage, Hit, ShotDirection, nullptr);
-			AController* OwnerController = GetOwnerController();
-			HitActor->TakeDamage(RegularDamage, DamageEvent, OwnerController, this);
+			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+			//UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ImpactSound, Hit.Location);
+			DrawDebugPoint(GetWorld(), Hit.Location, 10, FColor::Red, true);
+			AActor* HitActor = Hit.GetActor();
+
+			if (HitActor)
+			{
+				FPointDamageEvent DamageEvent(RegularDamage, Hit, ShotDirection, nullptr);
+				AController* OwnerController = GetOwnerController();
+				HitActor->TakeDamage(RegularDamage, DamageEvent, OwnerController, this);
+			}
+		}
+
+		if (bIsFiring)
+		{
+			GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AWeapon::HandleFiring, TimeBetweenShots, false);
 		}
 	}
-
-	if (bIsFiring)
+	else
 	{
-		GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AWeapon::HandleFiring, TimeBetweenShots, false);
+		bShouldReload = true;
 	}
 }
 

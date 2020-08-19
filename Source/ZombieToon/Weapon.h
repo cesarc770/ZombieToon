@@ -17,6 +17,9 @@ public:
 
 	void PullTrigger();
 	void ReleaseTrigger();
+	void GiveAmmo();
+	bool bShouldReload =  false;
+	class UAnimInstance* AnimInstance;
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,18 +35,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = WeaponStat)
 	bool bIsRocketGun = false;
 
+	UPROPERTY(VisibleAnywhere)
+	bool bIsFiring = false;
+
 	void GiveRocketGun();
 	void TakeRocketGun();
 
 private:
+
+	class AZombieToonCharacter* Character;
+
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* Mesh;
-
-	UPROPERTY(VisibleAnywhere)
-	bool bIsFiring = false;
 
 	UPROPERTY(EditAnywhere, Category = WeaponStat)
 	int CurrentAmmo;

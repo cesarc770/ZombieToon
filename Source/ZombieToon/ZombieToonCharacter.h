@@ -39,8 +39,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float AirControl = 0.2f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Recoil)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	float Recoil = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
+	class UAnimMontage* ReloadMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float MaxRegularWalkSpeed = 600.f;
@@ -52,10 +55,19 @@ public:
 	float MaxADSWalkSpeed = 300.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
-	bool bCanSpeedBoost = false;
+	bool bCanSpeedBoost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	bool bHasRocketGun = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
+	float SpeedBoostDuration = 10.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
+	float RocketGunDuration = 10.f;
+
+	TArray<FVector> PickupLocations;
+	class UAnimInstance* AnimInstance;
 
 protected:
 
@@ -88,9 +100,9 @@ protected:
 	void OnShootEnd();
 
 protected:
-	// APawn interface
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// End of APawn interface
+	virtual void Landed(const FHitResult& Hit) override;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -109,11 +121,21 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass;
 
+	UFUNCTION(BlueprintCallable)
 	void GiveRocketGun();
+
+	UFUNCTION(BlueprintCallable)
 	void TakeRocketGun();
 
+	UFUNCTION(BlueprintCallable)
+	void OnRocketGun();
 
+	UFUNCTION(BlueprintCallable)
+	void ToggleSpeedBoost();
 
+	void ResetSpeed();
+
+	int DoubleJumpCounter = 0;
 
 };
 

@@ -5,11 +5,13 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Weapon.h"
-#include "Components/CapsuleComponent.h"
+#include "TimerManager.h"
+#include "Animation/AnimInstance.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AZombieToonCharacter
@@ -57,6 +59,9 @@ void AZombieToonCharacter::BeginPlay()
 
 	GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
 	GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
+	bCanSpeedBoost = false;
+	AnimInstance = GetMesh()->GetAnimInstance();
+
 	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("weapon_socket"));
 	Weapon->SetOwner(this);
@@ -72,26 +77,16 @@ void AZombieToonCharacter::Tick(float DeltaTime)
 		AddControllerPitchInput(FinalRecoil);
 	}
 
-	if (!bIsZoomedIn)
+	if (Weapon->bShouldReload)
 	{
-		if (bCanSpeedBoost)
+		if (AnimInstance && ReloadMontage)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = MaxSpeedBoostWalkSpeed;
+			AnimInstance->Montage_Play(ReloadMontage, 1.35f);
 		}
-		else if (!bCanSpeedBoost)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
-		}
+		Weapon->GiveAmmo();
+
 	}
 
-	if (bHasRocketGun)
-	{
-		GiveRocketGun();
-	}
-	else if (!bHasRocketGun)
-	{
-		TakeRocketGun();
-	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -131,6 +126,11 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	//PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AZombieToonCharacter::OnResetVR);
 }
 
+void AZombieToonCharacter::Landed(const FHitResult& Hit)
+{
+	DoubleJumpCounter = 0;
+}
+
 
 
 void AZombieToonCharacter::TurnAtRate(float Rate)
@@ -156,6 +156,37 @@ void AZombieToonCharacter::MoveForward(float Value)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
+
+		if (bCanSpeedBoost && Value > 0)
+		{
+			if (AnimInstance)
+			{
+				FName AnimPropName = TEXT("Sprinting");
+				UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+				if (MyBoolProp != NULL)
+				{
+					bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+					MyBoolProp->SetPropertyValue_InContainer(AnimInstance, true);
+					BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+				}
+			}
+		}
+		
+
+	}
+	else if ((Controller != NULL) && (Value == 0.0f))
+	{
+		if (AnimInstance)
+		{
+			FName AnimPropName = TEXT("Sprinting");
+			UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+			if (MyBoolProp != NULL)
+			{
+				bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+				MyBoolProp->SetPropertyValue_InContainer(AnimInstance, false);
+				BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+			}
+		}
 	}
 }
 
@@ -176,16 +207,30 @@ void AZombieToonCharacter::MoveRight(float Value)
 
 void AZombieToonCharacter::Jumping()
 {
-	ACharacter::Jump();
+	if (!bCanSpeedBoost)
+	{
+		ACharacter::Jump();
+	}
+	else if (bCanSpeedBoost)
+	{
+		if (DoubleJumpCounter <= 1)
+		{
+			ACharacter::LaunchCharacter(FVector(0, 0, JumpZVelocity), false, true);
+			DoubleJumpCounter++;
+		}
+	}
+	
 }
 
 void AZombieToonCharacter::OnShootStart()
 {
 	if (Weapon)
 	{
+
 		bIsRecoiling = true;
 		Weapon->PullTrigger();
 	}
+
 
 }
 
@@ -208,6 +253,18 @@ void AZombieToonCharacter::ZoomIn()
 
 		GetCharacterMovement()->MaxWalkSpeed = MaxADSWalkSpeed;
 
+		if (AnimInstance)
+		{
+			FName AnimPropName = TEXT("Aiming");
+			UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+			if (MyBoolProp != NULL)
+			{
+				bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+				MyBoolProp->SetPropertyValue_InContainer(AnimInstance, true);
+				BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+			}
+		}
+
 		bIsZoomedIn = true;
 	}
 }
@@ -219,6 +276,18 @@ void AZombieToonCharacter::ZoomOut()
 		ThirdPersonCamera->TargetArmLength = 300.f;
 
 		GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
+
+		if (AnimInstance)
+		{
+			FName AnimPropName = TEXT("Aiming");
+			UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+			if (MyBoolProp != NULL)
+			{
+				bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+				MyBoolProp->SetPropertyValue_InContainer(AnimInstance, false);
+				BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+			}
+		}
 
 		bIsZoomedIn = false;
 	}
@@ -243,3 +312,43 @@ void AZombieToonCharacter::TakeRocketGun()
 		bHasRocketGun = false;
 	}
 }
+
+void AZombieToonCharacter::OnRocketGun()
+{
+	GiveRocketGun();
+
+	FTimerHandle RocketHandle;
+	GetWorld()->GetTimerManager().SetTimer(RocketHandle, this, &AZombieToonCharacter::TakeRocketGun, RocketGunDuration);
+
+}
+
+void AZombieToonCharacter::ToggleSpeedBoost()
+{
+	bCanSpeedBoost = true;
+	GetCharacterMovement()->MaxWalkSpeed = MaxSpeedBoostWalkSpeed;
+
+	FTimerHandle BoostHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(BoostHandle,this, &AZombieToonCharacter::ResetSpeed, SpeedBoostDuration);
+}
+
+void AZombieToonCharacter::ResetSpeed()
+{
+	bCanSpeedBoost = false;
+	GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
+	if (AnimInstance)
+	{
+		FName AnimPropName = TEXT("Sprinting");
+		UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+		if (MyBoolProp != NULL)
+		{
+			bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+			MyBoolProp->SetPropertyValue_InContainer(AnimInstance, false);
+			BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+		}
+	}
+}
+
+
+
+
