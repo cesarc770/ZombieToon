@@ -383,11 +383,11 @@ void AZombieToonCharacter::ThrowDistractor()
 			// Get the camera transform
 			FVector Location;
 			FRotator Rotation;
-			//FVector Direction;
 
-			//Direction = -Rotation.Vector();
+			Location += FTransform(Rotation).TransformVector(ThrowOffset);
+			GetActorEyesViewPoint(Location, Rotation);
 
-			OwnerController->GetPlayerViewPoint(Location, Rotation);
+			Rotation.Pitch += 10.0f;
 
 			UWorld* World = GetWorld();
 			if (World)

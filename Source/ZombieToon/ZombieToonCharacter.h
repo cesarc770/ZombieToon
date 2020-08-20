@@ -75,6 +75,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Power UPs")
 	TSubclassOf<class ADistractor> DistractorClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
+	FVector ThrowOffset;
+
 	TArray<FVector> PickupLocations;
 	class UAnimInstance* AnimInstance;
 
