@@ -213,16 +213,16 @@ void AZombieToonCharacter::Jumping()
 {
 	if (!bCanSpeedBoost)
 	{
-		ACharacter::Jump();
+		GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
 	}
 	else if (bCanSpeedBoost)
 	{
-		if (DoubleJumpCounter <= 1)
-		{
-			ACharacter::LaunchCharacter(FVector(0, 0, JumpZVelocity), false, true);
-			DoubleJumpCounter++;
-		}
+		float AbilityJump = JumpZVelocity + (JumpZVelocity * 0.5);
+		GetCharacterMovement()->JumpZVelocity = AbilityJump;
 	}
+
+	ACharacter::Jump();
+
 	
 }
 
