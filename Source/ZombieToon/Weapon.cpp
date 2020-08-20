@@ -9,6 +9,8 @@
 #include "DrawDebugHelpers.h"
 #include "Animation/AnimInstance.h"
 #include "ZombieToonCharacter.h"
+#include "WeaponProjectile.h"
+
 
 // Sets default values
 AWeapon::AWeapon()
@@ -119,31 +121,39 @@ void AWeapon::HandleFiring()
 	{
 		bShouldReload = false;
 		CurrentAmmo--;
-		//UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
-		//UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
 
-		FHitResult Hit;
-		FVector ShotDirection;
-
-		bool bSuccess = WeaponTrace(Hit, ShotDirection);
-		if (bSuccess)
+		if (bIsRocketGun)
 		{
-			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
-			//UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ImpactSound, Hit.Location);
-			DrawDebugPoint(GetWorld(), Hit.Location, 10, FColor::Red, true);
-			AActor* HitActor = Hit.GetActor();
-
-			if (HitActor)
-			{
-				FPointDamageEvent DamageEvent(RegularDamage, Hit, ShotDirection, nullptr);
-				AController* OwnerController = GetOwnerController();
-				HitActor->TakeDamage(RegularDamage, DamageEvent, OwnerController, this);
-			}
+			FireProjectile();
 		}
-
-		if (bIsFiring)
+		else
 		{
-			GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AWeapon::HandleFiring, TimeBetweenShots, false);
+			UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleSocket"));
+			UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleSocket"));
+
+			FHitResult Hit;
+			FVector ShotDirection;
+
+			bool bSuccess = WeaponTrace(Hit, ShotDirection);
+			if (bSuccess)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+				UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ImpactSound, Hit.Location);
+				//DrawDebugPoint(GetWorld(), Hit.Location, 10, FColor::Red, true);
+				AActor* HitActor = Hit.GetActor();
+
+				if (HitActor)
+				{
+					FPointDamageEvent DamageEvent(RegularDamage, Hit, ShotDirection, nullptr);
+					AController* OwnerController = GetOwnerController();
+					HitActor->TakeDamage(RegularDamage, DamageEvent, OwnerController, this);
+				}
+			}
+
+			if (bIsFiring)
+			{
+				GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AWeapon::HandleFiring, TimeBetweenShots, false);
+			}
 		}
 	}
 	else
@@ -161,5 +171,47 @@ AController* AWeapon::GetOwnerController() const
 
 	return OwnerPawn->GetController();
 }
+
+void AWeapon::FireProjectile()
+{
+	// Attempt to fire a projectile.
+	if (ProjectileClass)
+	{
+		AController* OwnerController = GetOwnerController();
+		if (OwnerController == nullptr)
+			return;
+		// Get the camera transform
+		FVector Location;
+		FRotator Rotation;
+		//FVector Direction;
+
+		//Direction = -Rotation.Vector();
+
+		OwnerController->GetPlayerViewPoint(Location, Rotation);
+
+		// Transform MuzzleOffset from camera space to world space.
+		FVector MuzzleLocation = Mesh->GetSocketLocation(FName(TEXT("MuzzleSocket")));
+		FRotator MuzzleRotation = Rotation;
+		// Skew the aim to be slightly upwards.
+		//MuzzleRotation.Pitch += 10.0f;
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = Instigator;
+			// Spawn the projectile at the muzzle.
+			AWeaponProjectile* Projectile = World->SpawnActor<AWeaponProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				// Set the projectile's initial trajectory.
+				FVector LaunchDirection = MuzzleRotation.Vector();
+				Projectile->InitVelocity(LaunchDirection);
+			}
+		}
+
+	}
+}
+
 
 

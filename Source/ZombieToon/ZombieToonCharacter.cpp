@@ -12,6 +12,7 @@
 #include "Weapon.h"
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
+#include "Distractor.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AZombieToonCharacter
@@ -113,6 +114,9 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	//shooting weapon
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AZombieToonCharacter::OnShootStart);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AZombieToonCharacter::OnShootEnd);
+
+	//Throw Distractor
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AZombieToonCharacter::ThrowDistractor);
 
 	//Aim Down Sights
 	PlayerInputComponent->BindAction("ADS", IE_Pressed, this, &AZombieToonCharacter::ZoomIn);
@@ -322,6 +326,23 @@ void AZombieToonCharacter::OnRocketGun()
 
 }
 
+void AZombieToonCharacter::OnDistractor()
+{
+
+	bCanThrowDistractor = true;
+	bIsReadyToThrowDistraction = true;
+
+	FTimerHandle BoostHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(BoostHandle, this, &AZombieToonCharacter::EndDistractor, DistractorDuration);
+
+}
+
+void AZombieToonCharacter::EndDistractor()
+{
+	bCanThrowDistractor = false;
+}
+
 void AZombieToonCharacter::ToggleSpeedBoost()
 {
 	bCanSpeedBoost = true;
@@ -347,6 +368,47 @@ void AZombieToonCharacter::ResetSpeed()
 			BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
 		}
 	}
+}
+
+void AZombieToonCharacter::ThrowDistractor()
+{
+	if (bCanThrowDistractor && bIsReadyToThrowDistraction)
+	{
+		// Attempt to fire a projectile.
+		if (DistractorClass)
+		{
+			AController* OwnerController = GetController();
+			if (OwnerController == nullptr)
+				return;
+			// Get the camera transform
+			FVector Location;
+			FRotator Rotation;
+			//FVector Direction;
+
+			//Direction = -Rotation.Vector();
+
+			OwnerController->GetPlayerViewPoint(Location, Rotation);
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = Instigator;
+				ADistractor* Projectile = World->SpawnActor<ADistractor>(DistractorClass, Location, Rotation, SpawnParams);
+				if (Projectile)
+				{
+					// Set the projectile's initial trajectory.
+					FVector LaunchDirection = Rotation.Vector();
+					Projectile->InitVelocity(LaunchDirection);
+				}
+			}
+
+			bIsReadyToThrowDistraction = false;
+
+		}
+	}
+	
 }
 
 

@@ -55,7 +55,10 @@ public:
 	float MaxADSWalkSpeed = 300.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
-	bool bCanSpeedBoost;
+	bool bCanSpeedBoost = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
+	bool bCanThrowDistractor = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	bool bHasRocketGun = false;
@@ -65,6 +68,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	float RocketGunDuration = 10.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
+	float DistractorDuration = 10.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Power UPs")
+	TSubclassOf<class ADistractor> DistractorClass;
 
 	TArray<FVector> PickupLocations;
 	class UAnimInstance* AnimInstance;
@@ -131,11 +140,20 @@ private:
 	void OnRocketGun();
 
 	UFUNCTION(BlueprintCallable)
+	void OnDistractor();
+
+	UFUNCTION(BlueprintCallable)
 	void ToggleSpeedBoost();
 
 	void ResetSpeed();
 
+	void EndDistractor();
+
+	void ThrowDistractor();
+
 	int DoubleJumpCounter = 0;
+
+	bool bIsReadyToThrowDistraction = false;
 
 };
 

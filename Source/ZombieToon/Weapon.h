@@ -38,6 +38,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	bool bIsFiring = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector MuzzleOffset;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class AWeaponProjectile> ProjectileClass;
+
 	void GiveRocketGun();
 	void TakeRocketGun();
 
@@ -76,8 +82,22 @@ private:
 	UPROPERTY(EditAnywhere, Category = WeaponStat)
 	float WeaponRange = 1000.f;
 
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* MuzzleFlash;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* MuzzleSound;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ImpactEffect;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ImpactSound;
+
 	/** Helper Methods**/
 	void HandleFiring();
 	bool WeaponTrace(FHitResult& Hit, FVector& ShotDirection);
 	AController* GetOwnerController() const;
+	void FireProjectile();
+
 };
