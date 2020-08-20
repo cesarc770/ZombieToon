@@ -211,7 +211,7 @@ void AZombieToonCharacter::MoveRight(float Value)
 
 void AZombieToonCharacter::Jumping()
 {
-	if (!bCanSpeedBoost)
+	/*if (!bCanSpeedBoost)
 	{
 		GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
 	}
@@ -219,7 +219,7 @@ void AZombieToonCharacter::Jumping()
 	{
 		float AbilityJump = JumpZVelocity + (JumpZVelocity * 0.5);
 		GetCharacterMovement()->JumpZVelocity = AbilityJump;
-	}
+	}*/
 
 	ACharacter::Jump();
 
