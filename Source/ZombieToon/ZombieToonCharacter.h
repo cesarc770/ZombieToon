@@ -167,6 +167,9 @@ private:
 	void OnRocketGun();
 
 	UFUNCTION(BlueprintCallable)
+	void OnHealthPack(int Value);
+
+	UFUNCTION(BlueprintCallable)
 	void OnDistractor();
 
 	UFUNCTION(BlueprintCallable)

@@ -371,6 +371,18 @@ void AZombieToonCharacter::OnRocketGun()
 
 }
 
+void AZombieToonCharacter::OnHealthPack(int Value)
+{
+	if (Health + Value > MaxHealth)
+	{
+		Health = MaxHealth;
+	}
+	else
+	{
+		Health += Value;
+	}
+}
+
 void AZombieToonCharacter::OnDistractor()
 {
 
