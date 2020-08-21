@@ -45,7 +45,6 @@ void AItem::Tick(float DeltaTime)
 
 	if (bRotate)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("rotating"));
 		FRotator Rotation = GetActorRotation();
 		Rotation.Yaw += DELTA * RotationRate;
 		SetActorRotation(Rotation);

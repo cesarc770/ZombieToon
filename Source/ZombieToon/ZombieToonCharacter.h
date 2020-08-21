@@ -32,6 +32,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	UPROPERTY(EditAnywhere, Category = Stats)
+	float MaxHealth = 100.f;
+
+	UPROPERTY(VisibleAnywhere, Category = Stats)
+	float Health;
+
 	/** Jump Z Velocity */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Movement)
 	float JumpZVelocity = 650.f;
@@ -78,6 +84,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	FVector ThrowOffset;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	TArray<FVector> PickupLocations;
 	class UAnimInstance* AnimInstance;
 
@@ -121,6 +129,12 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION(BlueprintPure)
+	bool IsDead() const;
+
+	UFUNCTION(BlueprintPure)
+	float GetHealthPercent() const;
 
 private:
 	bool bIsRecoiling = false;

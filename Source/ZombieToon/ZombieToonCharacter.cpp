@@ -52,12 +52,39 @@ AZombieToonCharacter::AZombieToonCharacter()
 	
 }
 
+float AZombieToonCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	/*if (Health > 0)
+	{
+		if (DamageToApply > Health)
+		{
+			Health = 0;
+		}
+		Health -= DamageToApply;
+	}*/
+
+	DamageToApply = FMath::Min(Health, DamageToApply);
+	Health -= DamageToApply;
+	UE_LOG(LogTemp, Warning, TEXT("Health left %f"), Health);
+
+	if (IsDead())
+	{
+
+		DetachFromControllerPendingDestroy();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	return DamageToApply;
+}
+
 //////
 //begin play
 void AZombieToonCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Health = MaxHealth;
 	GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
 	GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
 	bCanSpeedBoost = false;
@@ -133,6 +160,16 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 void AZombieToonCharacter::Landed(const FHitResult& Hit)
 {
 	DoubleJumpCounter = 0;
+}
+
+bool AZombieToonCharacter::IsDead() const
+{
+	return Health <= 0;
+}
+
+float AZombieToonCharacter::GetHealthPercent() const
+{
+	return Health / MaxHealth;
 }
 
 

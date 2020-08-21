@@ -31,7 +31,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	//if (!PlayerController->IsPauseMenuVisible())
 	//{
-		Character->Attack();
+	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		Character->Attack(PlayerPawn);
    //}
 
 	return EBTNodeResult::Succeeded;

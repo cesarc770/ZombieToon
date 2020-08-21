@@ -60,12 +60,13 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+
 float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	if (Health - DamageAmount <= 0.f)
 	{
 		Health -= DamageAmount;
-		//Die(DamageCauser);
+		Die(DamageCauser);
 	}
 	else {
 		Health -= DamageAmount;
@@ -74,17 +75,32 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEv
 	return DamageAmount;
 }
 
-void AEnemy::Attack()
+void AEnemy::Attack(AActor* HitActor)
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && CombatMontage)
+	TSubclassOf<UDamageType> P;
+	AZombieToonCharacter* Character = Cast<AZombieToonCharacter>(HitActor);
+	if (Character)
 	{
-		AnimInstance->Montage_Play(CombatMontage, 1.35f);
+		UGameplayStatics::ApplyDamage(Character, Damage, GetController(), this, P);
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && CombatMontage)
+		{
+			AnimInstance->Montage_Play(CombatMontage, 1.35f);
+		}
 	}
 }
 
 bool AEnemy::IsDead() const
 {
 	return Health <= 0;
+}
+
+void AEnemy::Die(AActor* Causer)
+{
+
+	DetachFromControllerPendingDestroy();
+	CombatSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 }
 
