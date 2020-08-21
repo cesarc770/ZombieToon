@@ -93,6 +93,8 @@ void AZombieToonCharacter::BeginPlay()
 	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("weapon_socket"));
 	Weapon->SetOwner(this);
+
+	EndDelegate.BindUObject(this, &AZombieToonCharacter::OnRelaodingAnimationEnded);
 }
 
 void AZombieToonCharacter::Tick(float DeltaTime)
@@ -103,16 +105,6 @@ void AZombieToonCharacter::Tick(float DeltaTime)
 	{
 		float FinalRecoil = Recoil * FMath::FRandRange(-.5f, .1f);
 		AddControllerPitchInput(FinalRecoil);
-	}
-
-	if (Weapon->bShouldReload)
-	{
-		if (AnimInstance && ReloadMontage)
-		{
-			AnimInstance->Montage_Play(ReloadMontage, 1.35f);
-		}
-		Weapon->GiveAmmo();
-
 	}
 
 }
@@ -170,6 +162,22 @@ bool AZombieToonCharacter::IsDead() const
 float AZombieToonCharacter::GetHealthPercent() const
 {
 	return Health / MaxHealth;
+}
+
+void AZombieToonCharacter::ReloadWeapon()
+{
+	if (AnimInstance && ReloadMontage)
+	{
+		AnimInstance->Montage_Play(ReloadMontage, 1.35f);
+		AnimInstance->Montage_SetEndDelegate(EndDelegate);
+	}
+
+}
+
+void AZombieToonCharacter::OnRelaodingAnimationEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	Weapon->GiveAmmo();
+	Weapon->bReloading = false;
 }
 
 
@@ -265,7 +273,7 @@ void AZombieToonCharacter::Jumping()
 
 void AZombieToonCharacter::OnShootStart()
 {
-	if (Weapon)
+	if (Weapon && !bReloading)
 	{
 
 		bIsRecoiling = true;

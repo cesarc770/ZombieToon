@@ -60,6 +60,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float MaxADSWalkSpeed = 300.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	bool bReloading = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	bool bCanSpeedBoost = false;
 
@@ -135,6 +138,13 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
+
+	void ReloadWeapon();
+
+	// Function declaration in header
+	void OnRelaodingAnimationEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	FOnMontageEnded EndDelegate;
 
 private:
 	bool bIsRecoiling = false;

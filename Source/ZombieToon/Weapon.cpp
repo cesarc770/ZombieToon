@@ -58,7 +58,9 @@ void AWeapon::TakeRocketGun()
 
 void AWeapon::PullTrigger()
 {
-	bIsFiring = true;
+	if (!bReloading)
+	{
+		bIsFiring = true;
 
 
 		//const float GameTime = GetWorld()->GetTimeSeconds();
@@ -70,7 +72,12 @@ void AWeapon::PullTrigger()
 		{
 			HandleFiring();
 		}
-
+	}
+	else
+	{
+		bIsFiring = false;
+		bShouldReload = true;
+	}
 
 }
 void AWeapon::ReleaseTrigger()
@@ -85,11 +92,12 @@ void AWeapon::GiveAmmo()
 	{
 		CurrentAmmo = RocketAmmo;
 	}
-	else 
+	else
 	{
 		CurrentAmmo = RegularAmmo;
 	}
-	bShouldReload = false;
+
+	
 }
 
 bool AWeapon::WeaponTrace(FHitResult& Hit, FVector& ShotDirection)
@@ -159,6 +167,13 @@ void AWeapon::HandleFiring()
 	else
 	{
 		bShouldReload = true;
+		AZombieToonCharacter* Character = Cast<AZombieToonCharacter>(GetOwner());
+
+		if (Character)
+		{
+			bReloading = true;
+			Character->ReloadWeapon();
+		}
 	}
 }
 

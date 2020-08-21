@@ -19,6 +19,7 @@ public:
 	void ReleaseTrigger();
 	void GiveAmmo();
 	bool bShouldReload =  false;
+	bool bReloading =  false;
 	class UAnimInstance* AnimInstance;
 
 protected:
