@@ -13,6 +13,7 @@
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
 #include "Distractor.h"
+#include "ZombieToonSaveGame.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AZombieToonCharacter
@@ -467,6 +468,23 @@ void AZombieToonCharacter::ThrowDistractor()
 	}
 	
 }
+
+void AZombieToonCharacter::SaveGame()
+{
+	UZombieToonSaveGame* SaveGameInstance = Cast<UZombieToonSaveGame>(UGameplayStatics::CreateSaveGameObject(UZombieToonSaveGame::StaticClass()));
+
+	FString MapName = GetWorld()->GetMapName();
+	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+
+	SaveGameInstance->CharacterStats.LevelName = MapName;
+
+	SaveGameInstance->CharacterStats.Location = GetActorLocation();
+	SaveGameInstance->CharacterStats.Rotation = GetActorRotation();
+
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->PlayerName, SaveGameInstance->UserIndex);
+
+}
+
 
 
 

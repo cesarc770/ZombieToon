@@ -139,6 +139,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
 
+	void SaveGame();
+
 	void ReloadWeapon();
 
 	// Function declaration in header
