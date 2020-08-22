@@ -14,6 +14,8 @@
 #include "Animation/AnimInstance.h"
 #include "Distractor.h"
 #include "ZombieToonSaveGame.h"
+#include "ZombieToonGameMode.h"
+#include "ZombieToonPlayerController.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AZombieToonCharacter
@@ -72,7 +74,14 @@ float AZombieToonCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 	if (IsDead())
 	{
 
-		DetachFromControllerPendingDestroy();
+		AZombieToonGameMode* GameMode = GetWorld()->GetAuthGameMode<AZombieToonGameMode>();
+
+		if (GameMode)
+		{
+			GameMode->PawnKilled(this);
+		}
+
+		//DetachFromControllerPendingDestroy();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
@@ -500,8 +509,31 @@ void AZombieToonCharacter::LoadGame(bool SetPosition)
 		SetActorRotation(LoadGameInstance->CharacterStats.Rotation);
 	}
 
+	//reset player stats
+
+	Health = MaxHealth;
+
 	GetMesh()->bPauseAnims = false;
 	GetMesh()->bNoSkeletonUpdate = false;
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	AZombieToonPlayerController* PlayerController = Cast<AZombieToonPlayerController>(GetController());
+	if (PlayerController)
+	{
+		PlayerController->AddHUDScreen();
+	}
+
+
+	/*if (!LoadGameInstance)
+	{
+		//May need this when in loose Scren to restart game
+		AZombieToonPlayerController* PlayerController = Cast<AZombieToonPlayerController>(GetController());
+		if (PlayerController)
+		{
+			PlayerController->RestartGame();
+		}
+	}*/
+
 }
 
 

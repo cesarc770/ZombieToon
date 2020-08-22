@@ -13,6 +13,12 @@ class AZombieToonGameMode : public AGameModeBase
 
 public:
 	AZombieToonGameMode();
+
+public:
+	void PawnKilled(APawn* PawnKilled);
+
+private:
+	void EndGame(bool bIsPlayerWinner);
 };
 
 
