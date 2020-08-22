@@ -471,6 +471,7 @@ void AZombieToonCharacter::ThrowDistractor()
 
 void AZombieToonCharacter::SaveGame()
 {
+	UE_LOG(LogTemp, Warning, TEXT("inside saving game"));
 	UZombieToonSaveGame* SaveGameInstance = Cast<UZombieToonSaveGame>(UGameplayStatics::CreateSaveGameObject(UZombieToonSaveGame::StaticClass()));
 
 	FString MapName = GetWorld()->GetMapName();
@@ -483,6 +484,24 @@ void AZombieToonCharacter::SaveGame()
 
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->PlayerName, SaveGameInstance->UserIndex);
 
+}
+
+void AZombieToonCharacter::LoadGame(bool SetPosition)
+{
+	UZombieToonSaveGame* LoadGameInstance = Cast<UZombieToonSaveGame>(UGameplayStatics::CreateSaveGameObject(UZombieToonSaveGame::StaticClass()));
+
+	LoadGameInstance = Cast<UZombieToonSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->PlayerName, LoadGameInstance->UserIndex));
+
+
+
+	if (SetPosition)
+	{
+		SetActorLocation(LoadGameInstance->CharacterStats.Location);
+		SetActorRotation(LoadGameInstance->CharacterStats.Rotation);
+	}
+
+	GetMesh()->bPauseAnims = false;
+	GetMesh()->bNoSkeletonUpdate = false;
 }
 
 
