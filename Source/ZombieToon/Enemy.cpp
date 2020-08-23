@@ -43,6 +43,8 @@ void AEnemy::BeginPlay()
 
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+	EnemyDelegate.BindUObject(this, &AEnemy::OnAttackAnimationEnded);
 	
 }
 
@@ -77,15 +79,16 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEv
 
 void AEnemy::Attack(AActor* HitActor)
 {
-	TSubclassOf<UDamageType> P;
+	//TSubclassOf<UDamageType> P;
 	AZombieToonCharacter* Character = Cast<AZombieToonCharacter>(HitActor);
-	if (Character)
+	if (!Character->IsDead())
 	{
-		UGameplayStatics::ApplyDamage(Character, Damage, GetController(), this, P);
+		//UGameplayStatics::ApplyDamage(Character, Damage, GetController(), this, P);
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance && CombatMontage)
 		{
-			AnimInstance->Montage_Play(CombatMontage, 1.35f);
+			AnimInstance->Montage_Play(CombatMontage, 1.23f);
+			AnimInstance->Montage_SetEndDelegate(EnemyDelegate);
 		}
 	}
 }
@@ -102,5 +105,15 @@ void AEnemy::Die(AActor* Causer)
 	CombatSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+}
+
+void AEnemy::OnAttackAnimationEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	TSubclassOf<UDamageType> P;
+	AZombieToonCharacter* Character = Cast <AZombieToonCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		UGameplayStatics::ApplyDamage(Character, Damage, GetController(), this, P);
+	}	
 }
 
