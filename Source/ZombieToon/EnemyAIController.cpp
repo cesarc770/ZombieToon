@@ -15,7 +15,7 @@ void AEnemyAIController::BeginPlay()
 	{
 		RunBehaviorTree(AIBehavior);
 
-		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
+		//GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
 	}
 }
 

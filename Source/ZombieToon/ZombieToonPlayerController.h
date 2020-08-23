@@ -14,11 +14,21 @@ class ZOMBIETOON_API AZombieToonPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	virtual void GameHasEnded(class AActor* EndGameFocus, bool bIsWinner) override;
+	void RestartGame();
+
+	void AddHUDScreen();
+
 protected:
 	virtual void BeginPlay() override;
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> HUDClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> LoseScreenClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> WinScreenClass;
 
 	UUserWidget* HUDScreen;
 	

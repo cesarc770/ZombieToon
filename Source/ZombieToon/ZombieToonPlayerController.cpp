@@ -3,17 +3,75 @@
 
 #include "ZombieToonPlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "ZombieToonCharacter.h"
+#include "TimerManager.h"
 
+
+void AZombieToonPlayerController::RestartGame()
+{
+
+	FTimerHandle RestartTimer;
+	GetWorldTimerManager().SetTimer(RestartTimer, this, &APlayerController::RestartLevel, 1.2f);
+}
+
+void AZombieToonPlayerController::AddHUDScreen()
+{
+	if (HUDClass)
+	{
+		HUDScreen = CreateWidget(this, HUDClass);
+		HUDScreen->AddToViewport();
+
+		FInputModeGameOnly InputModeOnly;
+		SetInputMode(InputModeOnly);
+		bShowMouseCursor = false;
+	}
+}
 
 void AZombieToonPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("GOT HERE??"));
 	if (HUDClass)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GOT HERE"));
 		HUDScreen = CreateWidget(this, HUDClass);
 		HUDScreen->AddToViewport();
+
+		FInputModeGameOnly InputModeOnly;
+		SetInputMode(InputModeOnly);
+		bShowMouseCursor = false;
 	}
 }
+
+void AZombieToonPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
+{
+	Super::GameHasEnded(EndGameFocus, bIsWinner);
+	HUDScreen->RemoveFromViewport();
+
+	if (bIsWinner)
+	{
+		//UUserWidget* WinScreen = CreateWidget(this, WinScreenClass);
+
+		//if (WinScreen)
+	//{
+		//	WinScreen->AddToViewport();
+	//	}
+	}
+	else
+	{
+		UUserWidget* LoseScreen = CreateWidget(this, LoseScreenClass);
+
+		if (LoseScreen)
+		{
+			LoseScreen->AddToViewport();
+
+			FInputModeGameAndUI InputModeGameAndUI;
+			SetInputMode(InputModeGameAndUI);
+			bShowMouseCursor = true;
+		}
+	}
+
+}
+
+
+
+
