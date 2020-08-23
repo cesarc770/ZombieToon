@@ -111,7 +111,7 @@ void AZombieToonCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsRecoiling)
+	if (bIsRecoiling && Weapon->bIsFiring)
 	{
 		float FinalRecoil = Recoil * FMath::FRandRange(-.5f, .1f);
 		AddControllerPitchInput(FinalRecoil);
@@ -288,6 +288,12 @@ void AZombieToonCharacter::OnShootStart()
 
 		bIsRecoiling = true;
 		Weapon->PullTrigger();
+
+		if (bHasRocketGun)
+		{
+			float FinalRecoil = 10 * Recoil * FMath::FRandRange(-.5f, .1f);
+			AddControllerPitchInput(FinalRecoil);
+		}
 	}
 
 

@@ -71,6 +71,7 @@ void AWeapon::PullTrigger()
 		else
 		{
 			HandleFiring();
+			bIsFiring = false;
 		}
 	}
 	else
@@ -171,6 +172,7 @@ void AWeapon::HandleFiring()
 
 		if (Character)
 		{
+			bIsFiring = false;
 			bReloading = true;
 			Character->ReloadWeapon();
 		}
