@@ -39,7 +39,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	if (Distractor)
 	{
-		Character->Attack(nullptr);
+		//Character->Attack(nullptr);
 	}
 	else
 	{

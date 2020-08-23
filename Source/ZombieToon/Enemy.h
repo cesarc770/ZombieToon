@@ -39,6 +39,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	TSubclassOf<UDamageType> DamageTypeClass;
 
+	FOnMontageEnded EnemyDelegate;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -65,6 +67,8 @@ public:
 	void Attack(AActor* HitActor);
 
 	void Die(AActor* Causer);
+
+	void OnAttackAnimationEnded(UAnimMontage* Montage, bool bInterrupted);
 
 
 };
