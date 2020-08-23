@@ -6,10 +6,14 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Pawn.h"
 #include "AIController.h"
+#include "ZombieToonCharacter.h"
+#include "Distractor.h"
 
 UBTService_PlayerLocationIfSeen::UBTService_PlayerLocationIfSeen()
 {
 	NodeName = TEXT("Update Player Location If Seen");
+
+	DistractorClass = ADistractor::StaticClass();
 }
 
 void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -27,13 +31,31 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent& OwnerComp
 		return;
 	}
 
-	if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn))
+	AZombieToonCharacter* Character = Cast<AZombieToonCharacter>(PlayerPawn);
+	//get distractor location and set it for player pawn location
+
+	ADistractor* Distractor = Cast<ADistractor>(UGameplayStatics::GetActorOfClass(GetWorld(), DistractorClass));
+
+	//if has thrown distractor
+	if (Character && Distractor)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
+		UE_LOG(LogTemp, Warning, TEXT("DISTRACTOR IN"));
+		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), Distractor);
 	}
 	else
 	{
-		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+		UE_LOG(LogTemp, Warning, TEXT("DISTRACTOR OUT"));
+
+		if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn))
+		{
+			OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
+		}
+		else
+		{
+			OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+		}
 	}
 
 }

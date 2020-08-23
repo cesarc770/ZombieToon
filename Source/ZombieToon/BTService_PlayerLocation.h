@@ -16,6 +16,7 @@ class ZOMBIETOON_API UBTService_PlayerLocation : public UBTService_BlackboardBas
 	
 public:
 	UBTService_PlayerLocation();
+
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

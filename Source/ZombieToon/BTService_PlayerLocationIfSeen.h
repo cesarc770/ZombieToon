@@ -16,6 +16,10 @@ class ZOMBIETOON_API UBTService_PlayerLocationIfSeen : public UBTService_Blackbo
 	
 public:
 	UBTService_PlayerLocationIfSeen();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ADistractor> DistractorClass;
+
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

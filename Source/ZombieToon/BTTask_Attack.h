@@ -18,6 +18,9 @@ public:
 
 	UBTTask_Attack();
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ADistractor> DistractorClass;
+
 protected:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

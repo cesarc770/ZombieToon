@@ -6,10 +6,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
 #include "ZombieToonPlayerController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Distractor.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {
 	NodeName = TEXT("Attack");
+	DistractorClass = ADistractor::StaticClass();
 }
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -31,8 +34,19 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	//if (!PlayerController->IsPauseMenuVisible())
 	//{
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+	ADistractor* Distractor = Cast<ADistractor>(UGameplayStatics::GetActorOfClass(GetWorld(), DistractorClass));
+
+	if (Distractor)
+	{
+		Character->Attack(nullptr);
+	}
+	else
+	{
+		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 		Character->Attack(PlayerPawn);
+	}
+		
    //}
 
 	return EBTNodeResult::Succeeded;

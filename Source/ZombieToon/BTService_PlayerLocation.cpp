@@ -5,10 +5,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Pawn.h"
+#include "ZombieToonCharacter.h"
+#include "Distractor.h"
 
 UBTService_PlayerLocation::UBTService_PlayerLocation()
 {
 	NodeName = TEXT("Update Player Location");
+
 }
 
 void UBTService_PlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -20,7 +23,5 @@ void UBTService_PlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 	{
 		return;
 	}
-
-	OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), PlayerPawn->GetActorLocation());
 
 }
