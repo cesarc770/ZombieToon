@@ -25,6 +25,25 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	}
 
 	AEnemy* Character = Cast<AEnemy>(OwnerComp.GetAIOwner()->GetPawn());
+	if (Character)
+	{
+		if (Character->bIsRunning)
+		{
+			UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+			if (AnimInstance)
+			{
+				FName AnimPropName = TEXT("Sprinting");
+				UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+				if (MyBoolProp != NULL)
+				{
+					bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+					MyBoolProp->SetPropertyValue_InContainer(AnimInstance, false);
+					BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+				}
+			}
+		}
+	}
+
 	AZombieToonPlayerController* PlayerController = Cast<AZombieToonPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	if (Character == nullptr)
