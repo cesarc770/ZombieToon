@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float Damage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	bool bIsRunning;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
 	class UAnimMontage* CombatMontage;
 	
