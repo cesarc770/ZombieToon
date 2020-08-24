@@ -206,8 +206,6 @@ void AZombieToonCharacter::LookUpAtRate(float Rate)
 
 void AZombieToonCharacter::MoveForward(float Value)
 {
-	if (IsDead()) return;
-
 	if ((Controller != NULL) && (Value != 0.0f))
 	{
 		// find out which way is forward
@@ -253,8 +251,6 @@ void AZombieToonCharacter::MoveForward(float Value)
 
 void AZombieToonCharacter::MoveRight(float Value)
 {
-	if (IsDead()) return;
-
 	if ( (Controller != NULL) && (Value != 0.0f) )
 	{
 		// find out which way is right
@@ -270,8 +266,6 @@ void AZombieToonCharacter::MoveRight(float Value)
 
 void AZombieToonCharacter::Jumping()
 {
-	if (IsDead()) return;
-
 	/*if (!bCanSpeedBoost)
 	{
 		GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
@@ -289,8 +283,6 @@ void AZombieToonCharacter::Jumping()
 
 void AZombieToonCharacter::OnShootStart()
 {
-	if (IsDead()) return;
-
 	if (Weapon && !bReloading)
 	{
 
@@ -320,8 +312,6 @@ void AZombieToonCharacter::OnShootEnd()
 
 void AZombieToonCharacter::ZoomIn()
 {
-	if (IsDead()) return;
-
 	if (auto ThirdPersonCamera = GetCameraBoom())
 	{
 		ThirdPersonCamera->TargetArmLength = 150.f;
@@ -346,8 +336,6 @@ void AZombieToonCharacter::ZoomIn()
 
 void AZombieToonCharacter::ZoomOut()
 {
-	if (IsDead()) return;
-
 	if (auto ThirdPersonCamera = GetCameraBoom())
 	{
 		ThirdPersonCamera->TargetArmLength = 300.f;
