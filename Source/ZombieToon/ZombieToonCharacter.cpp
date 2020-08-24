@@ -117,6 +117,22 @@ void AZombieToonCharacter::Tick(float DeltaTime)
 		AddControllerPitchInput(FinalRecoil);
 	}
 
+	if (bIsZoomedIn)
+	{
+		if (AnimInstance)
+		{
+			FName AnimPropName = TEXT("Sprinting");
+			UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+			if (MyBoolProp != NULL)
+			{
+				bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+				MyBoolProp->SetPropertyValue_InContainer(AnimInstance, false);
+				BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+			}
+		}
+
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -218,7 +234,7 @@ void AZombieToonCharacter::MoveForward(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
 
-		if (bCanSpeedBoost && Value > 0)
+		if (bCanSpeedBoost && Value > 0 && !bIsZoomedIn)
 		{
 			if (AnimInstance)
 			{
@@ -347,7 +363,15 @@ void AZombieToonCharacter::ZoomOut()
 	{
 		ThirdPersonCamera->TargetArmLength = 300.f;
 
-		GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
+		if (bCanSpeedBoost)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = MaxSpeedBoostWalkSpeed;
+		}
+		else
+		{
+			GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
+		}
+		
 
 		if (AnimInstance)
 		{
