@@ -177,7 +177,14 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 void AZombieToonCharacter::Landed(const FHitResult& Hit)
 {
-	DoubleJumpCounter = 0;
+	bJumping = false;
+
+	AZombieToonPlayerController* PlayerController = Cast<AZombieToonPlayerController>(GetController());
+
+	if (PlayerController->IsInputKeyDown(FKey(EKeys::RightMouseButton)))
+	{
+		ZoomIn();
+	}
 }
 
 bool AZombieToonCharacter::IsDead() const
@@ -296,7 +303,8 @@ void AZombieToonCharacter::Jumping()
 		float AbilityJump = JumpZVelocity + (JumpZVelocity * 0.5);
 		GetCharacterMovement()->JumpZVelocity = AbilityJump;
 	}*/
-
+	bJumping = true;
+	ZoomOut();
 	ACharacter::Jump();
 
 	
@@ -335,25 +343,28 @@ void AZombieToonCharacter::OnShootEnd()
 
 void AZombieToonCharacter::ZoomIn()
 {
-	if (auto ThirdPersonCamera = GetCameraBoom())
+	if (!bJumping) 
 	{
-		ThirdPersonCamera->TargetArmLength = 150.f;
-
-		GetCharacterMovement()->MaxWalkSpeed = MaxADSWalkSpeed;
-
-		if (AnimInstance)
+		if (auto ThirdPersonCamera = GetCameraBoom())
 		{
-			FName AnimPropName = TEXT("Aiming");
-			UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
-			if (MyBoolProp != NULL)
-			{
-				bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
-				MyBoolProp->SetPropertyValue_InContainer(AnimInstance, true);
-				BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
-			}
-		}
+			ThirdPersonCamera->TargetArmLength = 150.f;
 
-		bIsZoomedIn = true;
+			GetCharacterMovement()->MaxWalkSpeed = MaxADSWalkSpeed;
+
+			if (AnimInstance)
+			{
+				FName AnimPropName = TEXT("Aiming");
+				UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+				if (MyBoolProp != NULL)
+				{
+					bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+					MyBoolProp->SetPropertyValue_InContainer(AnimInstance, true);
+					BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+				}
+			}
+
+			bIsZoomedIn = true;
+		}
 	}
 }
 
