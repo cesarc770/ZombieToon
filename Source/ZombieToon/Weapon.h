@@ -20,6 +20,7 @@ public:
 	void GiveAmmo();
 	bool bShouldReload =  false;
 	bool bReloading =  false;
+	bool bIsZoomedIn = false;
 	class UAnimInstance* AnimInstance;
 
 protected:

@@ -109,7 +109,15 @@ bool AWeapon::WeaponTrace(FHitResult& Hit, FVector& ShotDirection)
 
 	FVector Location;
 	FRotator Rotation;
-	FVector Change = FVector(rand() % 200 + (-100),rand() % 200 + (-100), rand() % 200 + (-100));
+	FVector Change;
+	if (bIsZoomedIn)
+	{
+		Change = FVector(FMath::FRandRange(-80, 80), FMath::FRandRange(-80, 80), FMath::FRandRange(-80, 80));
+	}
+	else
+	{
+		Change = FVector(FMath::FRandRange(-240, 240), FMath::FRandRange(-240, 240), FMath::FRandRange(-240, 240));
+	}
 	ShotDirection = -Rotation.Vector();
 
 	OwnerController->GetPlayerViewPoint(Location, Rotation);

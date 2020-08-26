@@ -66,6 +66,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	bool bJumping = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	bool bIsZoomedIn = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	bool bCanSpeedBoost = false;
 
@@ -89,6 +92,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	FVector ThrowOffset;
+
+	UPROPERTY()
+	class AWeapon* Weapon;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
@@ -156,11 +162,6 @@ public:
 
 private:
 	bool bIsRecoiling = false;
-	bool bIsZoomedIn = false;
-
-	UPROPERTY()
-	class AWeapon* Weapon;
-
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass;

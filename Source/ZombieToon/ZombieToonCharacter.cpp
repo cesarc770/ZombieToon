@@ -364,6 +364,7 @@ void AZombieToonCharacter::ZoomIn()
 			}
 
 			bIsZoomedIn = true;
+			Weapon->bIsZoomedIn = true;
 		}
 	}
 }
@@ -397,6 +398,7 @@ void AZombieToonCharacter::ZoomOut()
 		}
 
 		bIsZoomedIn = false;
+		Weapon->bIsZoomedIn = false;
 	}
 }
 
