@@ -63,6 +63,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	bool bReloading = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	bool bJumping = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	bool bCanSpeedBoost = false;
 
