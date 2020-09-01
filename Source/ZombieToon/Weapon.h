@@ -102,4 +102,13 @@ private:
 	AController* GetOwnerController() const;
 	void FireProjectile();
 
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentAmmo() { return CurrentAmmo; };
+	
+	UFUNCTION(BlueprintCallable)
+	int GetRegularAmmo() { return RegularAmmo; };
+	
+	UFUNCTION(BlueprintCallable)
+	int GetRocketAmmo() { return RocketAmmo; };
+
 };
