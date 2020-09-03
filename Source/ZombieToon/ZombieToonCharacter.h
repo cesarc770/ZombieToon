@@ -38,6 +38,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Stats)
 	float Health;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	bool bHasKey = false;
+
 	/** Jump Z Velocity */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Movement)
 	float JumpZVelocity = 650.f;
@@ -183,6 +186,9 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleSpeedBoost();
+
+	UFUNCTION(BlueprintCallable)
+	void OnFoundKey();
 
 	void ResetSpeed();
 
