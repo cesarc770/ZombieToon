@@ -95,6 +95,7 @@ void AZombieToonCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Health = MaxHealth;
+	bHasKey = false;
 	GetCharacterMovement()->JumpZVelocity = JumpZVelocity;
 	GetCharacterMovement()->MaxWalkSpeed = MaxRegularWalkSpeed;
 	bCanSpeedBoost = false;
@@ -470,6 +471,11 @@ void AZombieToonCharacter::ToggleSpeedBoost()
 	GetWorld()->GetTimerManager().SetTimer(BoostHandle,this, &AZombieToonCharacter::ResetSpeed, SpeedBoostDuration);
 }
 
+void AZombieToonCharacter::OnFoundKey()
+{
+	bHasKey = true;
+}
+
 void AZombieToonCharacter::ResetSpeed()
 {
 	bCanSpeedBoost = false;
@@ -585,6 +591,7 @@ void AZombieToonCharacter::LoadGame(bool SetPosition)
 	}*/
 
 }
+
 
 
 
