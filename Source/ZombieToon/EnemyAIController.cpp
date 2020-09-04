@@ -4,15 +4,8 @@
 #include "EnemyAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Navigation/CrowdFollowingComponent.h"
 #include "Enemy.h"
 
-
-AEnemyAIController::AEnemyAIController(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent")))
-{
-
-}
 
 void AEnemyAIController::BeginPlay()
 {
