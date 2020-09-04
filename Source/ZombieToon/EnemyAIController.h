@@ -15,6 +15,7 @@ class ZOMBIETOON_API AEnemyAIController : public AAIController
 	GENERATED_BODY()
 
 public:
+	AEnemyAIController(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaTime) override;
 	bool IsDead() const;
 
