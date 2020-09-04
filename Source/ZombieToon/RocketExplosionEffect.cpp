@@ -23,7 +23,7 @@ ARocketExplosionEffect::ARocketExplosionEffect()
 	ExplosionLight->bUseInverseSquaredFalloff = false;
 	ExplosionLight->LightColor = FColor(255, 185, 35);
 	ExplosionLight->CastShadows = false;
-	ExplosionLight->bVisible = true;
+	//ExplosionLight->bVisible = true;
 
 	ExplosionLightFadeOut = 0.2f;
 

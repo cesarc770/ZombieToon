@@ -224,7 +224,7 @@ void AWeapon::FireProjectile()
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
-			SpawnParams.Instigator = Instigator;
+			//SpawnParams.Instigator = Instigator;
 			// Spawn the projectile at the muzzle.
 			AWeaponProjectile* Projectile = World->SpawnActor<AWeaponProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)

@@ -517,7 +517,7 @@ void AZombieToonCharacter::ThrowDistractor()
 			{
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.Owner = this;
-				SpawnParams.Instigator = Instigator;
+				//SpawnParams.Instigator = Instigator;
 				ADistractor* Projectile = World->SpawnActor<ADistractor>(DistractorClass, Location, Rotation, SpawnParams);
 				if (Projectile)
 				{
