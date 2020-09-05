@@ -42,6 +42,11 @@ void AZombieToonPlayerController::BeginPlay()
 	}
 }
 
+UUserWidget* AZombieToonPlayerController::GetHUDScreen()
+{
+	return HUDScreen;
+}
+
 void AZombieToonPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
