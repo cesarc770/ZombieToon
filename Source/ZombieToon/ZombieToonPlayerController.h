@@ -30,6 +30,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WinScreenClass;
 
+	UPROPERTY(EditAnywhere)
 	UUserWidget* HUDScreen;
+public:
+
+	UFUNCTION(BlueprintCallable)
+	UUserWidget* GetHUDScreen();
 	
 };
