@@ -81,3 +81,18 @@ void ASpawnTriggerVolume::SpawnOurActors(UClass* ToSpawn, const FVector& Locatio
 		}
 	}
 }
+
+
+void ASpawnTriggerVolume::SpawnActor(const FVector& Location)
+{
+	if (ItemClass)
+	{
+		UWorld* World = GetWorld();
+		FActorSpawnParameters SpawnParams;
+
+		if (World)
+		{
+			AActor* Actor = World->SpawnActor<AActor>(ItemClass, Location, FRotator(0.f), SpawnParams);
+		}
+	}
+}
