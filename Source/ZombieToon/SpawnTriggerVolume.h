@@ -17,12 +17,15 @@ public:
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transition")
-		class UBoxComponent* TriggerVolume;
+	class UBoxComponent* TriggerVolume;
 
 	class UBillboardComponent* Billboard;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-		TArray<FVector> PositionsArray;
+	TArray<FVector> PositionsArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
+	TSubclassOf<AActor> ItemClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,6 +39,9 @@ public:
 //	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable, Category = "Spawning")
-		void SpawnOurActors(UClass* ToSpawn, const FVector& Location);
+	void SpawnOurActors(UClass* ToSpawn, const FVector& Location);
+
+	UFUNCTION(BlueprintCallable, Category = "Spawning")
+	void SpawnActor(const FVector& Location);
 
 };
