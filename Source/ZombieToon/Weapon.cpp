@@ -56,6 +56,21 @@ void AWeapon::TakeRocketGun()
 	TimeBetweenShots = 0.07f;
 }
 
+bool AWeapon::CanReload()
+{
+	bool answer = false;
+
+	if (bIsRocketGun)
+	{
+		answer = CurrentAmmo < RocketAmmo;
+	}
+	else
+	{
+		answer = CurrentAmmo < RegularAmmo;
+	}
+	return answer;
+}
+
 void AWeapon::PullTrigger()
 {
 	if (!bReloading)
