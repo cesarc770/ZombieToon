@@ -82,7 +82,7 @@ float AZombieToonCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 		}
 
 		//DetachFromControllerPendingDestroy();
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
 	return DamageToApply;
