@@ -200,8 +200,9 @@ float AZombieToonCharacter::GetHealthPercent() const
 
 void AZombieToonCharacter::ReloadWeapon()
 {
-	if (AnimInstance && ReloadMontage)
+	if (AnimInstance && ReloadMontage && Weapon->CanReload())
 	{
+		Weapon->bReloading = true;
 		AnimInstance->Montage_Play(ReloadMontage, 1.35f);
 		AnimInstance->Montage_SetEndDelegate(EndDelegate);
 	}

@@ -48,6 +48,7 @@ public:
 
 	void GiveRocketGun();
 	void TakeRocketGun();
+	bool CanReload();
 
 private:
 
