@@ -37,7 +37,7 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent& OwnerComp
 	ADistractor* Distractor = Cast<ADistractor>(UGameplayStatics::GetActorOfClass(GetWorld(), DistractorClass));
 
 	//if has thrown distractor
-	if (Character && Distractor)
+	if (Character && OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn) && Distractor)
 	{
 		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), Distractor);
