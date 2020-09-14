@@ -47,6 +47,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	bool bByDoor = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	bool bByBoat = false;
+
 	/** Jump Z Velocity */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Movement)
 	float JumpZVelocity = 650.f;
