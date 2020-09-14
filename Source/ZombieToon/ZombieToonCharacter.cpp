@@ -345,7 +345,7 @@ void AZombieToonCharacter::OnShootEnd()
 
 void AZombieToonCharacter::ZoomIn()
 {
-	if (!bJumping) 
+	if (!bJumping && !IsDead()) 
 	{
 		if (auto ThirdPersonCamera = GetCameraBoom())
 		{
