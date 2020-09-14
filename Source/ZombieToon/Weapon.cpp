@@ -149,7 +149,9 @@ bool AWeapon::WeaponTrace(FHitResult& Hit, FVector& ShotDirection)
 
 void AWeapon::HandleFiring()
 {
-	if (CurrentAmmo > 0)
+	AZombieToonCharacter* Character = Cast<AZombieToonCharacter>(GetOwner());
+
+	if (CurrentAmmo > 0 && Character && !Character->IsDead())
 	{
 		bShouldReload = false;
 		CurrentAmmo--;
