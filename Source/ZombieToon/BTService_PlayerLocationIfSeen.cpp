@@ -8,6 +8,7 @@
 #include "AIController.h"
 #include "ZombieToonCharacter.h"
 #include "Distractor.h"
+#include "Enemy.h"
 
 UBTService_PlayerLocationIfSeen::UBTService_PlayerLocationIfSeen()
 {
@@ -53,6 +54,25 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent& OwnerComp
 		else
 		{
 			OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+			AEnemy* Character = Cast<AEnemy>(OwnerComp.GetAIOwner()->GetPawn());
+			if (Character)
+			{
+				if (Character->bIsRunning)
+				{
+					UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+					if (AnimInstance)
+					{
+						FName AnimPropName = TEXT("Sprinting");
+						UBoolProperty* MyBoolProp = FindField<UBoolProperty>(AnimInstance->GetClass(), AnimPropName);
+						if (MyBoolProp != NULL)
+						{
+							bool BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+							MyBoolProp->SetPropertyValue_InContainer(AnimInstance, false);
+							BoolVal = MyBoolProp->GetPropertyValue_InContainer(AnimInstance);
+						}
+					}
+				}
+			}
 		}
 	}
 
