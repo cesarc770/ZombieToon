@@ -81,6 +81,11 @@ float AZombieToonCharacter::TakeDamage(float DamageAmount, FDamageEvent const& D
 			GameMode->PawnKilled(this);
 		}
 
+		//end any active power ups
+		bCanThrowDistractor = false;
+		bCanSpeedBoost = false;
+		TakeRocketGun();
+
 		//DetachFromControllerPendingDestroy();
 		//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
@@ -449,11 +454,11 @@ void AZombieToonCharacter::OnDistractor()
 {
 
 	bCanThrowDistractor = true;
-	bIsReadyToThrowDistraction = true;
+	//bIsReadyToThrowDistraction = true;
 
-	FTimerHandle BoostHandle;
+	//FTimerHandle BoostHandle;
 
-	GetWorld()->GetTimerManager().SetTimer(BoostHandle, this, &AZombieToonCharacter::EndDistractor, DistractorDuration);
+	//GetWorld()->GetTimerManager().SetTimer(BoostHandle, this, &AZombieToonCharacter::EndDistractor, DistractorDuration);
 
 }
 
@@ -496,7 +501,7 @@ void AZombieToonCharacter::ResetSpeed()
 
 void AZombieToonCharacter::ThrowDistractor()
 {
-	if (bCanThrowDistractor && bIsReadyToThrowDistraction)
+	if (bCanThrowDistractor)
 	{
 		// Attempt to fire a projectile.
 		if (DistractorClass)
@@ -528,7 +533,7 @@ void AZombieToonCharacter::ThrowDistractor()
 				}
 			}
 
-			bIsReadyToThrowDistraction = false;
+			bCanThrowDistractor = false;
 
 		}
 	}

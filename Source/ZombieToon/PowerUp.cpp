@@ -28,7 +28,7 @@ void APowerUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 			UGameplayStatics::PlaySound2D(this, OverlapSound);
 		}
 
-		Destroy();
+		
 	}
 }
 
