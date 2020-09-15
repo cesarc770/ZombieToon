@@ -569,6 +569,7 @@ void AZombieToonCharacter::updateDoorCounter()
 {
 	if (OpenDoorCounter < 5)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("updating counter"));
 		OpenDoorCounter++;
 		GetWorld()->GetTimerManager().SetTimer(ActionHandler, this, &AZombieToonCharacter::updateDoorCounter, 1);
 	}
