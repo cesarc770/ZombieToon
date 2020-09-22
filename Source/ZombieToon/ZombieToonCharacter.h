@@ -50,8 +50,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	bool bByBoat = false;
 
-	bool bIsOpeningDoor = false;
-
 	/** Jump Z Velocity */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Movement)
 	float JumpZVelocity = 650.f;
@@ -92,6 +90,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	bool bHasRocketGun = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
+	bool bIsOpeningDoor = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	float SpeedBoostDuration = 10.f;
 
@@ -116,7 +117,7 @@ public:
 	class UAnimInstance* AnimInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int OpenDoorCounter = 0;
+	int OpenDoorCounter = 5;
 
 protected:
 
@@ -211,7 +212,8 @@ private:
 
 	void ThrowDistractor();
 
-	void PressAction();
+	void OnThrow();
+	void OnPressToOpen();
 	void ReleaseAction();
 	void updateDoorCounter();
 

@@ -167,7 +167,10 @@ void AZombieToonCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AZombieToonCharacter::OnShootEnd);
 
 	//Throw Distractor
-	PlayerInputComponent->BindAction("Action", IE_Pressed, this, &AZombieToonCharacter::PressAction);
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AZombieToonCharacter::OnThrow);
+
+	//OpenDoors
+	PlayerInputComponent->BindAction("Action", IE_Pressed, this, &AZombieToonCharacter::OnPressToOpen);
 	PlayerInputComponent->BindAction("Action", IE_Released, this, &AZombieToonCharacter::ReleaseAction);
 
 	//Aim Down Sights
@@ -541,36 +544,38 @@ void AZombieToonCharacter::ThrowDistractor()
 	
 }
 
-void AZombieToonCharacter::PressAction()
+void AZombieToonCharacter::OnThrow()
 {
 	
 	if (bCanThrowDistractor)
 	{
 		ThrowDistractor();
 	}
-	else
-	{
-		if (bByDoor || bByBoat)
-		{
-			
-			GetWorld()->GetTimerManager().SetTimer(ActionHandler, this, &AZombieToonCharacter::updateDoorCounter, 1);
-		}
-	}
 	
+}
+
+void AZombieToonCharacter::OnPressToOpen()
+{
+	if (bByDoor || bByBoat)
+	{
+		bIsOpeningDoor = true;
+		GetWorld()->GetTimerManager().SetTimer(ActionHandler, this, &AZombieToonCharacter::updateDoorCounter, 1);
+	}
 }
 
 void AZombieToonCharacter::ReleaseAction()
 {
 	GetWorldTimerManager().ClearTimer(ActionHandler);
-	OpenDoorCounter = 0;
+	bIsOpeningDoor = false;
+	OpenDoorCounter = 5;
 }
 
 void AZombieToonCharacter::updateDoorCounter()
 {
-	if (OpenDoorCounter < 5)
+	if (OpenDoorCounter > 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("updating counter"));
-		OpenDoorCounter++;
+		OpenDoorCounter--;
 		GetWorld()->GetTimerManager().SetTimer(ActionHandler, this, &AZombieToonCharacter::updateDoorCounter, 1);
 	}
 }
