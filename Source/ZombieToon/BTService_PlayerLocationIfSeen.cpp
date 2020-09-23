@@ -54,12 +54,12 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent& OwnerComp
 		else
 		{
 			OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
-			AEnemy* Character = Cast<AEnemy>(OwnerComp.GetAIOwner()->GetPawn());
-			if (Character)
+			AEnemy* EnemyChar = Cast<AEnemy>(OwnerComp.GetAIOwner()->GetPawn());
+			if (EnemyChar)
 			{
-				if (Character->bIsRunning)
+				if (EnemyChar->bIsRunning)
 				{
-					UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+					UAnimInstance* AnimInstance = EnemyChar->GetMesh()->GetAnimInstance();
 					if (AnimInstance)
 					{
 						FName AnimPropName = TEXT("Sprinting");

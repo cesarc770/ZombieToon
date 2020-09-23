@@ -18,7 +18,7 @@ void AZombieToonPlayerController::AddHUDScreen()
 {
 	if (HUDClass)
 	{
-		HUDScreen = CreateWidget(this, HUDClass);
+		HUDScreen = CreateWidget<UUserWidget>(this, HUDClass);
 		HUDScreen->AddToViewport();
 
 		FInputModeGameOnly InputModeOnly;
@@ -33,8 +33,9 @@ void AZombieToonPlayerController::BeginPlay()
 
 	if (HUDClass)
 	{
-		HUDScreen = CreateWidget(this, HUDClass);
+		HUDScreen = CreateWidget<UUserWidget>(this, HUDClass);
 		HUDScreen->AddToViewport();
+		HUDScreen->SetVisibility(ESlateVisibility::Visible);
 
 		FInputModeGameOnly InputModeOnly;
 		SetInputMode(InputModeOnly);
@@ -63,7 +64,7 @@ void AZombieToonPlayerController::GameHasEnded(class AActor* EndGameFocus, bool 
 	}
 	else
 	{
-		UUserWidget* LoseScreen = CreateWidget(this, LoseScreenClass);
+		UUserWidget* LoseScreen = CreateWidget<UUserWidget>(this, LoseScreenClass);
 
 		if (LoseScreen)
 		{
