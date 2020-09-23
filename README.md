@@ -5,7 +5,7 @@ Zombie Arcade Survival Game in Unreal
 ## Development
 Zombie Toon is currently in development. Consits of one level with 4 stages each one of them more difficult than the other one.
 
-##Gameplay Elements
+## Gameplay Elements
 Basic Mechanics of the game are shooting(hitscan), basic walk movement and jump. Powerups can be found along the level which increase the ability of the player character for a short amount of time.
 Among the powerups we have projectile shooting ability, speed boost and a Distractor item that the player can hold and throw at any time to divert the Zombies. Other pickups include Health and Keys to open the door and the boat at the end of the level. 
 
