@@ -16,6 +16,7 @@
 #include "ZombieToonSaveGame.h"
 #include "ZombieToonGameMode.h"
 #include "ZombieToonPlayerController.h"
+#include "Sound/SoundCue.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AZombieToonCharacter
@@ -57,22 +58,28 @@ AZombieToonCharacter::AZombieToonCharacter()
 
 float AZombieToonCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	if (IsDead()) return 0;
+
 	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	/*if (Health > 0)
-	{
-		if (DamageToApply > Health)
-		{
-			Health = 0;
-		}
-		Health -= DamageToApply;
-	}*/
 
 	DamageToApply = FMath::Min(Health, DamageToApply);
 	Health -= DamageToApply;
 	UE_LOG(LogTemp, Warning, TEXT("Health left %f"), Health);
+	
+	if (DamagedSounds.Num() > 0)
+	{
+		int index = (int)FMath::FRandRange(0, DamagedSounds.Num());
+
+		UGameplayStatics::PlaySound2D(this, DamagedSounds[index]);
+	}
 
 	if (IsDead())
 	{
+		if (DeadSound)
+		{
+
+			UGameplayStatics::PlaySound2D(this, DeadSound);
+		}
 
 		AZombieToonGameMode* GameMode = GetWorld()->GetAuthGameMode<AZombieToonGameMode>();
 
@@ -212,6 +219,10 @@ void AZombieToonCharacter::ReloadWeapon()
 	if (AnimInstance && ReloadMontage && Weapon->CanReload())
 	{
 		Weapon->bReloading = true;
+		if (ReloadSound)
+		{
+			UGameplayStatics::PlaySound2D(this, ReloadSound);
+		}
 		AnimInstance->Montage_Play(ReloadMontage, 1.35f);
 		AnimInstance->Montage_SetEndDelegate(EndDelegate);
 	}

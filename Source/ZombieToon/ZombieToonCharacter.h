@@ -105,6 +105,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Power UPs")
 	TSubclassOf<class ADistractor> DistractorClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sounds")
+	TArray<class USoundCue*> DamagedSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sounds")
+	USoundCue* DeadSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Sounds")
+	USoundCue* ReloadSound;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	FVector ThrowOffset;
 
