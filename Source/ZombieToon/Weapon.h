@@ -19,7 +19,6 @@ public:
 	void ReleaseTrigger();
 	void GiveAmmo();
 	bool bShouldReload =  false;
-	bool bReloading =  false;
 	bool bIsZoomedIn = false;
 	class UAnimInstance* AnimInstance;
 
@@ -39,6 +38,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsFiring = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bReloading = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
