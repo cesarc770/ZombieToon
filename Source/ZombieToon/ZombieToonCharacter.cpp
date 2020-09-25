@@ -573,7 +573,7 @@ void AZombieToonCharacter::OnPressToOpen()
 		GetWorld()->GetTimerManager().SetTimer(ActionHandler, this, &AZombieToonCharacter::updateDoorCounter, 1);
 	}
 
-	if (bByBoat && ZombiesKilled >= 20)
+	if (bByBoat && ZombiesKilled >= 25)
 	{
 		bIsOpeningDoor = true;
 		GetWorld()->GetTimerManager().SetTimer(ActionHandler, this, &AZombieToonCharacter::updateDoorCounter, 1);
