@@ -41,11 +41,52 @@ void AZombieToonPlayerController::BeginPlay()
 		SetInputMode(InputModeOnly);
 		bShowMouseCursor = false;
 	}
+
 }
 
 UUserWidget* AZombieToonPlayerController::GetHUDScreen()
 {
 	return HUDScreen;
+}
+
+UUserWidget* AZombieToonPlayerController::GetActiveWidget()
+{
+	if (ActiveTutorialWidget != NULL)
+	{
+		return ActiveTutorialWidget;
+	}
+
+	return nullptr;
+}
+
+UUserWidget* AZombieToonPlayerController::GetWidgetScreen(int index)
+{
+	switch (index)
+	{
+	case 0:
+		InitialScreen = CreateWidget<UUserWidget>(this, InitialClass);
+		ActiveTutorialWidget = InitialScreen;
+		return InitialScreen;
+	case 1:
+		ActiveTutorialWidget = CreateWidget<UUserWidget>(this, DistractorWidgetClass);
+		return ActiveTutorialWidget;
+	case 2:
+		ActiveTutorialWidget = CreateWidget<UUserWidget>(this, HealthWidgetClass);
+		return ActiveTutorialWidget;
+	case 3:
+		ActiveTutorialWidget = CreateWidget<UUserWidget>(this, RocketWidgetClass);
+		return ActiveTutorialWidget;
+	case 4:
+		ActiveTutorialWidget = CreateWidget<UUserWidget>(this, SpeedWidgetClass);
+		return ActiveTutorialWidget;
+	default:
+		return nullptr;
+	}
+}
+
+void AZombieToonPlayerController::SetActiveWidgetNull()
+{
+	ActiveTutorialWidget = nullptr;
 }
 
 void AZombieToonPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)

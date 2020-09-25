@@ -50,6 +50,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	bool bByBoat = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	bool bHasSeenDistractor = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	bool bHasSeenHealth = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	bool bHasSeenRocket = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	bool bHasSeenSpeed = false;
+
 	/** Jump Z Velocity */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Movement)
 	float JumpZVelocity = 650.f;
@@ -62,6 +71,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	class UAnimMontage* ReloadMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ZombiesKilled = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float MaxRegularWalkSpeed = 600.f;
@@ -92,6 +104,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
 	bool bIsOpeningDoor = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
+	bool bEnteredLastZone = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power UPs")
 	float SpeedBoostDuration = 10.f;

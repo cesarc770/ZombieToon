@@ -67,8 +67,11 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEv
 {
 	if (Health - DamageAmount <= 0.f)
 	{
+		if (!IsDead())
+		{
+			Die(DamageCauser);
+		}
 		Health -= DamageAmount;
-		Die(DamageCauser);
 	}
 	else {
 		Health -= DamageAmount;
@@ -100,6 +103,13 @@ bool AEnemy::IsDead() const
 
 void AEnemy::Die(AActor* Causer)
 {
+		AZombieToonCharacter* Killer = Cast <AZombieToonCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+		if (Killer)
+		{
+			Killer->ZombiesKilled += 1;
+
+		}
 
 	DetachFromControllerPendingDestroy();
 	CombatSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
