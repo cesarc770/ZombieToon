@@ -51,6 +51,9 @@ public:
 	bool bByBoat = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
+	bool bByBridge = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	bool bHasSeenDistractor = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	bool bHasSeenHealth = false;
